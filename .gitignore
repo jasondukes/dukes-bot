@@ -1,0 +1,61 @@
+# ── Data files with real message content or personal info ──────────────────
+*.json
+!*.sample.json
+
+# ── Databases ──────────────────────────────────────────────────────────────
+*.db
+
+# ── Model files ────────────────────────────────────────────────────────────
+*.gguf
+*.safetensors
+
+# ── Exported data ──────────────────────────────────────────────────────────
+*.xlsx
+
+# ── Python ─────────────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+
+# ── Virtual environments ────────────────────────────────────────────────────
+venv/
+mlx_venv/
+.venv/
+
+# ── Training output directories ────────────────────────────────────────────
+output/
+output_v2/
+output_v3/
+mlx_adapters/
+
+# ── Runtime state files (named explicitly as extra safety net) ─────────────
+trusted_contacts.json
+session_state.json
+focus_state.json
+pending_actions.json
+message_buffer.json
+contact_memory.db
+response_patterns.db
+
+# ── Lock file ──────────────────────────────────────────────────────────────
+/tmp/jason_bot.lock
+
+# ── Logs (contain message content and phone numbers) ───────────────────────
+*.log
+*.log.*
+
+# ── Environment / secrets ──────────────────────────────────────────────────
+.env
+.env.*
+
+# ── macOS ──────────────────────────────────────────────────────────────────
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# ── Developer notes (contain real IPs / names — use CLAUDE.md.example instead) ──
+CLAUDE.md
+
+# ── Claude Code local settings (contain absolute paths with username) ───────
+.claude/
+!.env.example

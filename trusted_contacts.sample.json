@@ -1,0 +1,8 @@
+{
+  "note": "This file is auto-generated at startup from macOS AddressBook. Do not commit the real version.",
+  "format": "10-digit normalized phone → first name",
+  "example": {
+    "5551234567": "Alice",
+    "5559876543": "Bob"
+  }
+}

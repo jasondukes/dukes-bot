@@ -1,0 +1,15 @@
+{
+  "note": "Runtime session state — auto-written by session_state.py. Do not commit the real version.",
+  "sessions": {
+    "+15551234567": {
+      "phone": "+15551234567",
+      "focus_when_started": "Driving",
+      "focus_activated_at": "2026-01-01T09:00:00",
+      "session_start": "2026-01-01T09:00:05",
+      "last_message_at": "2026-01-01T09:05:00",
+      "session_start_sent": true,
+      "opt_out_message_sent": false
+    }
+  },
+  "opted_out_permanent": []
+}

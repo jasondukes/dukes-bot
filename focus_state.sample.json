@@ -1,0 +1,6 @@
+{
+  "note": "Written by focus_daemon.py every time Focus state changes. Do not commit the real version.",
+  "focus": null,
+  "activated_at": null,
+  "previous": null
+}

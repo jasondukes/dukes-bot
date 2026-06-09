@@ -1,0 +1,80 @@
+# DukesBot Project
+
+## What This Is
+A personal iMessage chatbot trained on the owner's actual text message history.
+The bot responds to unknown contacts (not in the owner's contacts) via iMessage using
+a fine-tuned Llama 3.2 3B model served by Ollama on a local Linux machine.
+
+## Architecture
+- **Mac Mini** (this machine): Runs jason_bot.py, polls ~/Library/Messages/chat.db,
+  sends replies via AppleScript → Messages.app
+- **Linux Tower** (YOUR_LINUX_IP): Runs Ollama on port 11434, serves the voice model,
+  hosts Unsloth training container on port 8400
+
+## Key Files
+- `jason_bot.py` — Main bot polling loop, Ollama API calls, AppleScript send
+- `training_data_v4.json` — Cleaned iMessage training data (13,187 conversations) — **not committed**
+- `jason_voice.xlsx` — Messages exported for voice training — **not committed**
+
+## Bot Behavior
+- **Blocklist model**: Anyone in Mac Contacts = NEVER responds
+- **Allowlist**: Unknown numbers only get responses
+- Responds to 1:1 chats only, never group chats
+- Maintains conversation history per contact (in-memory, last 10 turns)
+- Strips em-dashes, double-dashes, tapback reactions from all output
+- NEVER discusses: race, religion, gender, politics, or any controversial topics
+- Deflection response for sensitive topics: "That's not something I'm going to get into. What else is up?"
+
+## Voice Profile
+- Short messages, 1-3 sentences max
+- Casual vocabulary: [configure in BOT_SYSTEM_PROMPT with the owner's actual distinctive words]
+- Words to avoid: [configure in BOT_SYSTEM_PROMPT]
+- No em-dashes, no formal punctuation, no signing name
+
+## Ollama Model
+- Model name: YOUR_MODEL_NAME
+- Base: Llama 3.2 3B Instruct
+- LoRA trained on 13,187 1:1 iMessage conversations, 5 epochs
+- Modelfile at: /opt/stacks/ollama/ollama-data/models/Modelfile (on Linux tower)
+- GGUF at: /opt/stacks/ollama/ollama-data/models/YOUR_MODEL_NAME.gguf (on Linux tower)
+
+## Training Pipeline (Linux Tower)
+- Unsloth container: http://YOUR_LINUX_IP:8400 (token: YOUR_UNSLOTH_TOKEN)
+- Training data lives at: /opt/stacks/unsloth/training_data.json
+- Output models: /opt/stacks/unsloth/output/
+- Key env vars needed: UNSLOTH_COMPILE_DISABLE=1, PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
+- GPU: RTX 2080 Super 8GB — use 3B models only, max_seq_length=1024
+
+## Trusted Contacts
+Trusted contacts (family members who receive full bot responses + can trigger Calendar/
+Reminders/Notes actions) are resolved at startup from macOS AddressBook by full name.
+Configure in `action_detector.py`:
+- `TRUSTED_FULL_NAMES` — full name → short name for contacts needing surname disambiguation
+- `TRUSTED_FIRST_NAMES` — first-name-only matching for unambiguous contacts
+- `MANUAL_TRUST_OVERRIDES` — phone number overrides for numbers not in AddressBook
+- `FOCUS_RESPONSE_NAMES` — subset that receives voice responses during Focus mode
+
+## Next Features to Build
+1. Blocklist implementation using Mac Contacts sqlite DB
+2. Unknown number transparent opener: "Hey, this is [name]'s chatbot..."
+3. Safety filtering with direct topic deflection
+4. Persistent conversation memory to SQLite (survives restarts)
+
+## Running the Bot
+```bash
+cd ~/dukes-bot
+source ~/YOUR_VENV_PATH/venv/bin/activate
+python3 jason_bot.py
+```
+
+## Mac Mini Requirements
+- Calendar must be installed, running, and signed into iCloud/Google
+- Reminders must be installed and running
+- Notes must be installed, running, and signed into iCloud
+- All three are auto-launched silently at bot startup via ensure_apps_running()
+- focus_daemon.py requires Full Disk Access (System Preferences → Privacy & Security → Full Disk Access → add python3)
+
+## Dependencies
+- Python venv at: ~/YOUR_VENV_PATH/venv
+- pip packages: see requirements.txt
+- Ollama must be running on Linux tower before starting bot
